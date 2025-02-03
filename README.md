@@ -16,6 +16,9 @@ The UWB Transceiver is built around the STM32F412 microcontroller. It uses the D
 
 To create a collection of anchor devices and one tag device. See the reference below. 
 
+https://github.com/norrdine/Trilateration-Matlab
+https://www.researchgate.net/publication/275027725_An_Algebraic_Solution_to_the_Multilateration_Problem
+
 # Solution to the multilateration problem
 See this paper for the solution to the multilateration problem. This process allows us to use the information regarding the anchor node locations, and the most recent time of flight distances between the mobile tag node and the static anchor nodes. To solve for the UAV's position in 3D space. 
 
