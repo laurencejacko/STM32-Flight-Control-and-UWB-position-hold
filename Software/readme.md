@@ -1,20 +1,30 @@
-- "MATLAB PLOTTING"
-  Produces figures from the recorded flight data
-- "UWB FLIGHT CONTROL"
-  Software that executes on the flight controller. The important files are found at:
+## MATLAB Plotting
+Produces figures from the recorded flight data.
 
- "core -> src -> main.c/.h"
- 
- "core -> src -> freertos.c" (runs the RTOS scheduler)
- 
- "tasks -> tasks_uwb.c/.h" (important functions for solving the multilateration position)
+---
 
- LittleFS updates the flash memory
+## UWB Flight Control
+Software that runs on the flight controller.
 
- The folder "Radio" refers to the driver for the onboard LoRa module, "CRSF_LIB" refers to the driver to use the CRSF protocol that lets the operator use an ELRS transmitter to control the UAV (ELRS device connects via a 4 pin picoblade connector and is not the onboard LoRa module). 
+### Key source files
+| Purpose | File(s) |
+|---------|---------|
+| Main application entry point | `core/src/main.c`, `core/src/main.h` |
+| RTOS scheduler | `core/src/freertos.c` |
+| UWB multilateration functions | `tasks/tasks_uwb.c`, `tasks/tasks_uwb.h` |
 
- - "UWB_CAN_REVB"
+**Note:** LittleFS is used to update the flash memory.
 
-   Software that executes on the UWB enabled PCB. Configures between a static mode when mounted on the wall and a mobile mode that updates the flight controller with the distance data (ie the distance from the UAV to node A:F). In mobile mode, this data is updated as soon as is available with a CAN bus message. 
+### Drivers
+- **`Radio/`** – driver for the onboard **LoRa** module.  
+- **`CRSF_LIB/`** – driver for the **CRSF** protocol, enabling control via an **ELRS** transmitter (connected through a 4‑pin Picoblade connector and **not** to be confused with the onboard LoRa module).
 
- 
+---
+
+## UWB_CAN_REVB
+Firmware for the UWB‑enabled PCB.
+
+| Mode | Description |
+|------|-------------|
+| **Static mode** | PCB is mounted on a fixed surface (e.g., a wall). |
+| **Mobile mode** | PCB is mounted on the UAV; distance data to nodes A–F is sent to the flight controller via CAN bus as soon as new measurements are available. |
