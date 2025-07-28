@@ -17,19 +17,20 @@ The UWB Transceiver is built around the STM32F412 microcontroller. It uses the D
 To create a collection of anchor devices and one tag device. See the reference below. 
 
 https://github.com/norrdine/Trilateration-Matlab
-https://www.researchgate.net/publication/275027725_An_Algebraic_Solution_to_the_Multilateration_Problem
 
 # Solution to the multilateration problem
-See this paper for the solution to the multilateration problem. This process allows us to use the information regarding the anchor node locations, and the most recent time of flight distances between the mobile tag node and the static anchor nodes. To solve for the UAV's position in 3D space. 
+See this paper for the solution to the multilateration problem. This process enables us to utilise information regarding the anchor node locations and the most recent flight times and distances between the mobile tag node and the static anchor nodes. To solve for the UAV's position in 3D space. 
 
-For a 2D solution is it required to have at least 3 anchors providing TOF distances. For 3D solution it is required for at least 4 anchors providing TOF distances. I struggled in getting a stable position control when the UWB antenna on my drone was not pointing directly up. I also found if the multilateration solution suddenly returned a large position change (seen with a sudden height drop on the UAV). It was because at least 1 anchor was reporting a larger error. To address this, I recommend more than 5 anchors (I had 5), otherwise I have included an error check. This compares the magnitude given by multilateration and the magnitude found from squaring the found coordinates. If greater than a value (chosen by looking at the flight logs), I do not update the Z coordinate (ignoring the 3rd dimension, return to requiring only 3 good solutions). 
+https://www.researchgate.net/publication/275027725_An_Algebraic_Solution_to_the_Multilateration_Problem
+
+For a 2D solution, is it required to have at least 3 anchors providing TOF distances. For 3D solution it is required for at least 4 anchors providing TOF distances. I struggled in getting a stable position control when the UWB antenna on my drone was not pointing directly up. I also found that the multilateration solution suddenly returned a large position change (seen with a sudden height drop on the UAV). It was because at least 1 anchor was reporting a larger error. To address this, I recommend more than 5 anchors (I had 5), otherwise, I have included an error check. This compares the magnitude given by multilateration and the magnitude found from squaring the found coordinates. If this is greater than a value (chosen by looking at the flight logs), I do not update the Z coordinate (ignoring the 3rd dimension, return to requiring only 3 good solutions). 
 
 # Position Control
-Position control is largly taken from the ardupilot documents. 
+Position control is largely taken from the ArduPilot documents. 
 
-A position error is fed via a P controller to become a velocity setpoint. A velocity error becomes an acceleration setpoint. Which is divided by the UAV thrust (m/s2) and applying inverse tangent to generate a roll/pitch setpoint. 
+A position error is fed via a P controller to become a velocity setpoint. A velocity error becomes an acceleration setpoint. Which is divided by the UAV thrust (m/s2) and applied to the inverse tangent to generate a roll/pitch setpoint. 
 
-A height error passes via a P controller into velocity setpoint, velocity error into a PI controller to become acceleration setpoint. Acceleration error passes into a PID controller to become a motor correction. See the implementation that introduce a scalar term to convert between throttle units (from the remote control) and units of m/s2. 
+A height error passes via a P controller into velocity setpoint, velocity error into a PI controller to become acceleration setpoint. Acceleration error passes into a PID controller to become a motor correction. See the implementation that introduces a scalar term to convert between throttle units (from the remote control) and units of m/s2. 
 
 I have only included a position hold function. I don't intend to add a waypoint navigation function. Position hold appears to maintain within +- 0.15m of the setpoint. Oscillations are likely due to antenna misalignment, where at least 1 anchor node reports an incorrect distance, causing potentially unstable harmonics. The 0.15m error was not validated with an external system (motion capture), the drone could visually be seen to hover at it's desired setpoint and required no manual input to throttle, roll, pitch or yaw from the operator. 
 
